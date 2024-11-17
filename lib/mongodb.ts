@@ -1,30 +1,25 @@
 import { MongoClient } from 'mongodb';
 
-// URL de conexão, que você já obteve no Atlas
-const MONGO_URI = process.env.MONGODB_URI as string;
+const uri = process.env.MONGODB_URI!;
+const options = {};
 
-if (!MONGO_URI) {
-  throw new Error('Por favor, defina a variável de ambiente MONGODB_URI no arquivo .env.local');
-}
-
-declare global {
-  // Para evitar problemas de tipo no TypeScript ao usar variáveis globais
-  var _mongoClientPromise: Promise<MongoClient> | undefined;
-}
-
-let client: MongoClient;
+let client;
 let clientPromise: Promise<MongoClient>;
 
+if (!process.env.MONGODB_URI) {
+  throw new Error("Please add your Mongo URI to .env.local");
+}
+
 if (process.env.NODE_ENV === 'development') {
-  // Durante o desenvolvimento, usa o MongoClient em modo não bloqueante (para evitar múltiplas conexões durante hot reload)
-  if (!global._mongoClientPromise) {
-    client = new MongoClient(MONGO_URI);
-    global._mongoClientPromise = client.connect();
+  // Verifica se já existe um cliente Mongo no global para evitar várias conexões em desenvolvimento
+  if (!globalThis._mongoClientPromise) {
+    client = new MongoClient(uri, options);
+    globalThis._mongoClientPromise = client.connect();
   }
-  clientPromise = global._mongoClientPromise;
+  clientPromise = globalThis._mongoClientPromise;
 } else {
-  // Em produção, usa o MongoClient normalmente
-  client = new MongoClient(MONGO_URI);
+  // Em produção, cria um novo cliente a cada vez
+  client = new MongoClient(uri, options);
   clientPromise = client.connect();
 }
 

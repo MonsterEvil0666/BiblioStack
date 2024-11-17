@@ -161,7 +161,7 @@ export default function CadastroGeneros() {
     if (!confirmacao) return;
 
     try {
-      for (let id of selectedIds) {
+      for (const id of selectedIds) {
         const response = await fetch(`/api/generos/${id}`, {
           method: "DELETE",
         });

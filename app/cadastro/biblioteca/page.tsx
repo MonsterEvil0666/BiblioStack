@@ -23,8 +23,6 @@ export default function CadastroLivros() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [authorSearchTerm, setAuthorSearchTerm] = useState<string>("");
   const [autores, setAutores] = useState([{ id: "1", nome: "Autor Existente" }]);
-  const [autorInput, setAutorInput] = useState("");
-  const [setMensagemCadastroAutor] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
   const [generoInput, setGeneroInput] = useState(""); // Controle do input de gêneros
   const [sugestoes, setSugestoes] = useState<{ nome: string; id: string }[]>([]);
@@ -297,7 +295,7 @@ const adicionarLivro = async () => {
     if (!confirmacao) return;
 
     try {
-      for (let id of selectedIds) {
+      for (const id of selectedIds) {
         const response = await fetch(`/api/biblioteca/${id}`, {
           method: "DELETE",
         });
