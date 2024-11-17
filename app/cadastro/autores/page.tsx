@@ -162,7 +162,7 @@ export default function CadastroAutores() {
     if (!confirmacao) return;
 
     try {
-      for (let id of selectedIds) {
+      for (const id of selectedIds) {
         const response = await fetch(`/api/autores/${id}`, {
           method: "DELETE",
         });

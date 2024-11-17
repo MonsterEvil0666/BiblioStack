@@ -24,8 +24,7 @@ export default function CadastroLivros() {
   const [authorSearchTerm, setAuthorSearchTerm] = useState<string>("");
   const [autores, setAutores] = useState([{ id: "1", nome: "Autor Existente" }]);
   const [autorInput, setAutorInput] = useState("");
-  const [showCadastroAutor, setShowCadastroAutor] = useState(false);
-  const [mensagemCadastroAutor, setMensagemCadastroAutor] = useState("");
+  const [setMensagemCadastroAutor] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
   const [generoInput, setGeneroInput] = useState(""); // Controle do input de gêneros
   const [sugestoes, setSugestoes] = useState<{ nome: string; id: string }[]>([]);
@@ -350,54 +349,6 @@ const adicionarLivro = async () => {
       setSugestoes([]); // Limpa as sugestões quando o input está vazio
     }
   };
-
-  const handleAutorChange = (value: string) => {
-    setAutorInput(value);
-    const autorExiste = autores.some(
-      (autor) => autor.nome.toLowerCase() === value.toLowerCase()
-    );
-
-    if (!autorExiste && value.trim() !== "") {
-      setMensagemCadastroAutor(
-        `O autor "${value}" não está cadastrado. Deseja cadastrá-lo?`
-      );
-    } else {
-      setMensagemCadastroAutor("");
-    }
-  };
-
-const cadastrarAutor = async () => {
-  console.log("Valor do autor antes de corrigir:", autorInput);
-  const nomeCorrigido = corrigirNome(autorInput);
-  console.log("Valor do autor após corrigir:", nomeCorrigido);
-
-  if (!nomeCorrigido) {
-     setMensagemErro("O nome do autor deve conter apenas caracteres alfabéticos.");
-     return;
-  }
-
-  try {
-     const response = await fetch("/api/autores", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nome: nomeCorrigido }),
-     });
-
-     if (response.ok) {
-        // Atualiza a lista de autores após cadastrar o novo autor
-        await fetchAutores();
-        setMensagemCadastroAutor(`Autor "${nomeCorrigido}" cadastrado com sucesso!`);
-        setAutorInput(nomeCorrigido);
-        setMensagemErro("");
-     } else {
-        const erro = await response.json();
-        setMensagemErro(erro.message || "Erro ao cadastrar autor.");
-     }
-  } catch (error) {
-     console.error("Erro ao cadastrar autor:", error);
-     setMensagemErro("Erro ao cadastrar autor.");
-  }
-};
 
   const normalizeString = (str: string) => {
     return str

@@ -13,7 +13,7 @@ function normalizeString(str: string): string {
 
 export async function POST(req: Request) {
   try {
-    let autor = await req.json();
+    const autor = await req.json();
 
     // Validação básica
     if (!autor.nome || typeof autor.nome !== 'string') {
