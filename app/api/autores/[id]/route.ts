@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '../../../../lib/mongodb';
+import { NextRequest } from 'next/server';
 
-export async function DELETE(req: Request, context: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
   try {
     const client = await clientPromise;
     const db = client.db();
@@ -27,25 +28,22 @@ export async function DELETE(req: Request, context: { params: { id: string } }) 
   }
 }
 
-export async function PUT(req: Request, context: { params: { id: string } }) {
+export async function PUT(req: NextRequest, context: { params: { id: string } }) {
   try {
     const client = await clientPromise;
     const db = client.db();
     const collection = db.collection("autores");
 
-    // Converter o id para número, já que ele é numérico
     const id = parseInt(context.params.id, 10);
     if (isNaN(id)) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
     }
 
-    // Ler o corpo da requisição
     const { nome } = await req.json();
     if (!nome || typeof nome !== 'string') {
       return NextResponse.json({ error: 'Nome do autor é obrigatório e deve ser uma string' }, { status: 400 });
     }
 
-    // Tentar atualizar o autor
     const result = await collection.updateOne({ id }, { $set: { nome } });
 
     if (result.modifiedCount === 1) {
